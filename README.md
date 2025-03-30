@@ -1,50 +1,38 @@
-# React + TypeScript + Vite
+# Stone Notes UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Stone Notes UI is a simple frontend for the Stone Notes application, providing a user-friendly interface to interact with the backend.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Vite
+- React
+- TypeScript
+- Tailwind CSS
+- Shadcn Components
+- Jest
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Before running the application, ensure you have the following:
 
-- Configure the top-level `parserOptions` property like this:
+- A `.env.local` file set up with the environment variable `VITE_STONE_NOTES_API_URL`, pointing to the backend API.
+- Dependencies installed using:
+  ```sh
+  npm install
+  ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Running the Application
+
+To start the development server, use:
+
+```sh
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Running Tests
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+To execute tests, run:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```sh
+npm run test
 ```
