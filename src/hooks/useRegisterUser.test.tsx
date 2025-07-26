@@ -3,56 +3,65 @@ import { useRegisterUser } from "./useRegisterUser";
 import { registerUser, SignupResponse } from "@/services/signupService";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignupFormData } from "@/components/signup/Signup";
+import { ReactNode } from "react";
 
-jest.mock("@/services/signupService", () => ({
-  registerUser: jest.fn(),
+jest.mock("@/services/signupService");
+jest.mock("@/lib/config", () => ({
+  config: {
+    apiUrl: "http://mock-api.com",
+  },
 }));
 
-const createWrapper = () => {
-  const queryClient = new QueryClient();
-  const wrapper = ({ children }: { children: React.ReactNode }) => {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
-  };
+const mockedRegisterUser = registerUser as jest.MockedFunction<typeof registerUser>;
 
-  return wrapper;
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return ({ children }: { children: ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 };
 
 describe("useRegisterUser", () => {
   const mockFormData: SignupFormData = {
-    email: "test@test.com",
+    email: "test@example.com",
     firstName: "Test",
     lastName: "User",
-    password: "password",
+    password: "password123",
   };
-  it("should call registerUser with provided data", async () => {
-    const mockSuccessResponse: SignupResponse = {
-      message: "success response",
-      success: true,
-      data: "success data",
-      status: 200,
-    };
-    (registerUser as jest.Mock).mockResolvedValueOnce(mockSuccessResponse);
 
-    const { result } = renderHook(() => useRegisterUser(), {
-      wrapper: createWrapper(),
-    });
-
-    act(() => {
-      result.current.mutate(mockFormData);
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    console.log(result.current.data);
-
-    expect(registerUser).toHaveBeenCalledWith(mockFormData);
-    expect(result.current.data).toEqual(mockSuccessResponse);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  it("should error on failed registration", async () => {
-    const mockErrorResponse = new Error("error response");
-    (registerUser as jest.Mock).mockRejectedValueOnce(mockErrorResponse);
+  test("should return useMutation result with correct structure", () => {
+    const { result } = renderHook(() => useRegisterUser(), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current).toHaveProperty("mutate");
+    expect(result.current).toHaveProperty("mutateAsync");
+    expect(result.current).toHaveProperty("isPending");
+    expect(result.current).toHaveProperty("isError");
+    expect(result.current).toHaveProperty("isSuccess");
+    expect(result.current).toHaveProperty("data");
+    expect(result.current).toHaveProperty("error");
+  });
+
+  test("should call registerUser service with correct data", async () => {
+    const mockResponse: SignupResponse = {
+      success: true,
+      data: "user-id",
+      message: "Registration successful",
+      status: 201,
+    };
+
+    mockedRegisterUser.mockResolvedValue(mockResponse);
 
     const { result } = renderHook(() => useRegisterUser(), {
       wrapper: createWrapper(),
@@ -62,9 +71,91 @@ describe("useRegisterUser", () => {
       result.current.mutate(mockFormData);
     });
 
-    await waitFor(() => expect(result.current.isError).toBe(true));
+    await waitFor(() => {
+      expect(mockedRegisterUser).toHaveBeenCalledWith(mockFormData);
+    });
+  });
 
-    expect(registerUser).toHaveBeenCalledWith(mockFormData);
-    expect(result.current.error).toEqual(mockErrorResponse);
+  test("should handle successful registration", async () => {
+    const mockResponse: SignupResponse = {
+      success: true,
+      data: "user-id",
+      message: "Registration successful",
+      status: 201,
+    };
+
+    mockedRegisterUser.mockResolvedValue(mockResponse);
+
+    const { result } = renderHook(() => useRegisterUser(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.mutate(mockFormData);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.data).toEqual(mockResponse);
+      expect(result.current.error).toBeNull();
+    });
+  });
+
+  test("should handle registration error", async () => {
+    const mockError = new Error("Email already exists");
+    mockedRegisterUser.mockRejectedValue(mockError);
+
+    const { result } = renderHook(() => useRegisterUser(), {
+      wrapper: createWrapper(),
+    });
+
+    act(() => {
+      result.current.mutate(mockFormData);
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(true);
+      expect(result.current.error).toEqual(mockError);
+      expect(result.current.data).toBeUndefined();
+    });
+  });
+
+  test("should track pending state during mutation", async () => {
+    let resolveRegister: (value: SignupResponse) => void = () => {};
+    const registerPromise = new Promise<SignupResponse>((resolve) => {
+      resolveRegister = resolve;
+    });
+
+    mockedRegisterUser.mockReturnValue(registerPromise);
+
+    const { result } = renderHook(() => useRegisterUser(), {
+      wrapper: createWrapper(),
+    });
+
+    // Start mutation
+    act(() => {
+      result.current.mutate(mockFormData);
+    });
+
+    // Should be pending
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(true);
+    });
+
+    // Resolve the promise
+    act(() => {
+      resolveRegister({
+        success: true,
+        data: "user-id",
+        message: "Success",
+        status: 201,
+      });
+    });
+
+    // Should no longer be pending
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+    });
   });
 });
