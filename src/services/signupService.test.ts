@@ -4,7 +4,7 @@
 
 import { config } from "@/lib/config";
 import { SignupFormData } from "@/components/signup/Signup";
-import { registerUser } from "./signupService";
+import { registerUser, SignupResponse } from "./signupService";
 
 jest.mock("@/lib/config", () => ({
   config: {
@@ -22,7 +22,12 @@ afterEach(() => {
 
 describe("registerUser", () => {
   it("should successfully register a user", async () => {
-    const mockResponse = { message: "User registered successfully" };
+    const mockResponse: SignupResponse = {
+      message: "success response",
+      success: true,
+      data: "success data",
+      status: 200,
+    };
     (fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue(mockResponse),
@@ -45,7 +50,12 @@ describe("registerUser", () => {
   });
 
   it("should throw an error if registration fails", async () => {
-    const mockErrorResponse = { message: "Email already exists" };
+    const mockErrorResponse: SignupResponse = {
+      success: false,
+      message: "Email already exists",
+      data: null,
+      status: 409,
+    };
     (fetch as jest.Mock).mockResolvedValue({
       ok: false,
       json: jest.fn().mockResolvedValue(mockErrorResponse),

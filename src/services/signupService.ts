@@ -2,7 +2,10 @@ import { SignupFormData } from "@/components/signup/Signup";
 import { config } from "@/lib/config";
 
 export type SignupResponse = {
+  success: boolean;
+  data: string | null;
   message: string;
+  status: number;
 };
 
 export async function registerUser(
