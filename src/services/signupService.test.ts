@@ -90,4 +90,35 @@ describe("registerUser", () => {
       "Failed to register user"
     );
   });
+
+  it("should handle network errors", async () => {
+    (fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
+
+    const formData: SignupFormData = {
+      email: "test@example.com",
+      password: "password123",
+      firstName: "John",
+      lastName: "Doe",
+    };
+
+    await expect(registerUser(formData)).rejects.toThrow("Network error");
+  });
+
+  it("should handle malformed JSON response", async () => {
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+    });
+
+    const formData: SignupFormData = {
+      email: "test@example.com",
+      password: "password123",
+      firstName: "John",
+      lastName: "Doe",
+    };
+
+    await expect(registerUser(formData)).rejects.toThrow(
+      "Failed to register user"
+    );
+  });
 });

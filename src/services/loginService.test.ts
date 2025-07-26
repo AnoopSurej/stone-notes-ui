@@ -69,4 +69,43 @@ describe("loginUser", () => {
 
     await expect(loginUser(loginFormData)).rejects.toThrow("Bad credentials");
   });
+
+  it("should throw a generic error if response has no message", async () => {
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      json: jest.fn().mockResolvedValue({}),
+    });
+
+    const loginFormData: LoginFormData = {
+      email: "test@test.com",
+      password: "password",
+    };
+
+    await expect(loginUser(loginFormData)).rejects.toThrow("Failed to login");
+  });
+
+  it("should handle network errors", async () => {
+    (fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
+
+    const loginFormData: LoginFormData = {
+      email: "test@test.com",
+      password: "password",
+    };
+
+    await expect(loginUser(loginFormData)).rejects.toThrow("Network error");
+  });
+
+  it("should handle malformed JSON response", async () => {
+    (fetch as jest.Mock).mockResolvedValue({
+      ok: false,
+      json: jest.fn().mockRejectedValue(new Error("Invalid JSON")),
+    });
+
+    const loginFormData: LoginFormData = {
+      email: "test@test.com",
+      password: "password",
+    };
+
+    await expect(loginUser(loginFormData)).rejects.toThrow("Failed to login");
+  });
 });

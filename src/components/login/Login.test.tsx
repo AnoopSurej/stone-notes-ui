@@ -136,6 +136,31 @@ describe("Login components", () => {
       expect(screen.queryByText("Email is invalid")).toBeNull();
       expect(screen.queryByText("Password is required")).toBeNull();
     });
+
+    test("Should show correct error messages for each field (password bug regression test)", async () => {
+      renderLoginWithMock();
+
+      const emailField = screen.getByLabelText("Username");
+      const passwordField = screen.getByLabelText("Password");
+      const button = screen.getByRole("button", { name: /log in/i });
+
+      await user.type(emailField, "invalid-email");
+      await user.click(button);
+
+      const emailError = screen.getByText("Email is invalid");
+      const passwordError = screen.getByText("Password is required");
+
+      expect(emailError).toBeVisible();
+      expect(passwordError).toBeVisible();
+
+      const emailContainer = emailField.closest(".space-y-2");
+      const passwordContainer = passwordField.closest(".space-y-2");
+
+      expect(emailContainer).toContainElement(emailError);
+      expect(passwordContainer).toContainElement(passwordError);
+
+      expect(passwordContainer).not.toContainElement(emailError);
+    });
   });
 
   describe("Form Interactions", () => {
