@@ -27,10 +27,13 @@ describe("useRegisterUser", () => {
     password: "password",
   };
   it("should call registerUser with provided data", async () => {
-    const mockSuccessResponse: SignupResponse = { message: "success response" };
-    (registerUser as jest.Mock).mockResolvedValueOnce({
+    const mockSuccessResponse: SignupResponse = {
       message: "success response",
-    });
+      success: true,
+      data: "success data",
+      status: 200,
+    };
+    (registerUser as jest.Mock).mockResolvedValueOnce(mockSuccessResponse);
 
     const { result } = renderHook(() => useRegisterUser(), {
       wrapper: createWrapper(),
@@ -41,6 +44,7 @@ describe("useRegisterUser", () => {
     });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    console.log(result.current.data);
 
     expect(registerUser).toHaveBeenCalledWith(mockFormData);
     expect(result.current.data).toEqual(mockSuccessResponse);
