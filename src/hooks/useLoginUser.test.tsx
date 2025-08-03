@@ -1,10 +1,10 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useLoginUser } from "./useLoginUser";
-import { loginUser, LoginResponse } from "@/services/loginService";
+import { loginUser, LoginResponse } from "@/services/auth/loginService";
 import { ReactNode } from "react";
 
-jest.mock("@/services/loginService");
+jest.mock("@/services/auth/loginService");
 jest.mock("@/lib/config", () => ({
   config: {
     apiUrl: "http://mock-api.com",

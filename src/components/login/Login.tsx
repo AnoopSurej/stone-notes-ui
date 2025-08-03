@@ -48,7 +48,6 @@ export default function Login() {
   };
 
   const validateForm = (): boolean => {
-    console.log("Here!");
     const newErrors: LoginFormErrors = {};
     if (!loginFormData.email) {
       newErrors.email = "Email is required";
@@ -128,7 +127,7 @@ export default function Login() {
       <CardFooter className="block justify-center text-center text-sm text-muted-foreground">
         <Button className="w-full mb-2" form="login-form">
           {isPending ? (
-            <Spinner size={"small"} className="text-white"/>
+            <Spinner size={"small"} className="text-white" />
           ) : (
             "Log in"
           )}

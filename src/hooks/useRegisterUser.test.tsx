@@ -1,18 +1,20 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { useRegisterUser } from "./useRegisterUser";
-import { registerUser, SignupResponse } from "@/services/signupService";
+import { registerUser, SignupResponse } from "@/services/auth/signupService";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SignupFormData } from "@/components/signup/Signup";
 import { ReactNode } from "react";
 
-jest.mock("@/services/signupService");
+jest.mock("@/services/auth/signupService");
 jest.mock("@/lib/config", () => ({
   config: {
     apiUrl: "http://mock-api.com",
   },
 }));
 
-const mockedRegisterUser = registerUser as jest.MockedFunction<typeof registerUser>;
+const mockedRegisterUser = registerUser as jest.MockedFunction<
+  typeof registerUser
+>;
 
 const createWrapper = () => {
   const queryClient = new QueryClient({

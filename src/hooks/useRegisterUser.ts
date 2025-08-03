@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { registerUser, SignupResponse } from "@/services/signupService";
+import { registerUser, SignupResponse } from "@/services/auth/signupService";
 
 export function useRegisterUser() {
   return useMutation<
