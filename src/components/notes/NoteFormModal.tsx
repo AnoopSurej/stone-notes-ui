@@ -1,0 +1,128 @@
+import { useState, useEffect } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
+import { useCreateNote, useUpdateNote, type Note } from "@/hooks/useNotes";
+
+interface NoteFormModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  note?: Note;
+}
+
+export function NoteFormModal({ open, onOpenChange, note }: NoteFormModalProps) {
+  const createNote = useCreateNote();
+  const updateNote = useUpdateNote();
+  const isEditing = !!note;
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  // Update form when note changes or modal opens
+  useEffect(() => {
+    if (note) {
+      setTitle(note.title);
+      setContent(note.content);
+    } else {
+      setTitle("");
+      setContent("");
+    }
+  }, [note, open]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      if (isEditing) {
+        await updateNote.mutateAsync({
+          id: note.id,
+          title,
+          content,
+        });
+      } else {
+        await createNote.mutateAsync({
+          title,
+          content,
+        });
+      }
+      onOpenChange(false);
+      setTitle("");
+      setContent("");
+    } catch (err) {
+      console.error(`Failed to ${isEditing ? 'update' : 'create'} note:`, err);
+    }
+  };
+
+  const isPending = createNote.isPending || updateNote.isPending;
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[525px]">
+        <form onSubmit={handleSubmit}>
+          <DialogHeader>
+            <DialogTitle>{isEditing ? "Edit Note" : "Create New Note"}</DialogTitle>
+            <DialogDescription>
+              {isEditing
+                ? "Make changes to your note here."
+                : "Add a new note to your collection."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                maxLength={255}
+                placeholder="Enter note title"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="content">Content</Label>
+              <Textarea
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={8}
+                maxLength={10000}
+                placeholder="Enter note content"
+                className="resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isPending}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isPending} className="min-w-24">
+              {isPending ? (
+                <Spinner className="text-white size-5" />
+              ) : isEditing ? (
+                "Save Changes"
+              ) : (
+                "Create Note"
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
