@@ -3,7 +3,7 @@ import { NoteItem } from "./NoteItem";
 import type { Note } from "@/hooks/useNotes";
 
 jest.mock("./DeleteNoteDialog", () => ({
-  DeleteNoteDialog: ({ note, onConfirm }) => (
+  DeleteNoteDialog: ({ note, onConfirm }: { note: Note; onConfirm: (id: number) => void }) => (
     <button onClick={() => onConfirm(note.id)}>Delete Dialog</button>
   ),
 }));
