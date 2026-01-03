@@ -2,6 +2,14 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NotesList } from "./NotesList";
 import type { Note } from "@/hooks/useNotes";
+import { toast } from "sonner";
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
 jest.mock("./NoteItem", () => ({
   NoteItem: ({
@@ -73,6 +81,7 @@ describe("NotesList", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     global.confirm = jest.fn(() => true);
+    mockDeleteMutate.mockResolvedValue({});
   });
 
   it("should render list of notes", () => {
@@ -116,6 +125,30 @@ describe("NotesList", () => {
 
     await waitFor(() => {
       expect(mockDeleteMutate).toHaveBeenCalledWith(1);
+    });
+  });
+
+  it("should show success toast when deleting note successfully", async () => {
+    render(<NotesList />, { wrapper });
+
+    const deleteButtons = screen.getAllByText("Delete");
+    fireEvent.click(deleteButtons[0]);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Note deleted successfully");
+    });
+  });
+
+  it("should show error toast when deleting note fails", async () => {
+    mockDeleteMutate.mockRejectedValueOnce(new Error("Network error"));
+
+    render(<NotesList />, { wrapper });
+
+    const deleteButtons = screen.getAllByText("Delete");
+    fireEvent.click(deleteButtons[0]);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Failed to delete note. Please try again.");
     });
   });
 });

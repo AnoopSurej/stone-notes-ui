@@ -6,6 +6,7 @@ import { oidcConfig } from "@/lib/config.ts";
 import { ProtectedRoute } from "@/components/ProtectedRoute.tsx";
 import NotesPage from "@/pages/NotesPage.tsx";
 import SignedOut from "@/pages/SignedOut.tsx";
+import { Toaster } from "@/components/ui/sonner";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function App() {
             />
           </Routes>
         </Router>
+        <Toaster />
       </QueryClientProvider>
     </AuthProvider>
   );

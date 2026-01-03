@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NoteFormModal } from "./NoteFormModal";
 import type { Note } from "@/hooks/useNotes";
+import { toast } from "sonner";
 
 const mockMutateAsync = jest.fn();
 const mockCreateNote = {
@@ -16,6 +17,13 @@ const mockUpdateNote = {
 jest.mock("@/hooks/useNotes", () => ({
   useCreateNote: () => mockCreateNote,
   useUpdateNote: () => mockUpdateNote,
+}));
+
+jest.mock("sonner", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
 }));
 
 jest.mock("react-oidc-context", () => ({
@@ -136,5 +144,84 @@ describe("NoteFormModal", () => {
     rerender(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />);
 
     expect(screen.getByPlaceholderText("Enter note title")).toHaveValue("");
+  });
+
+  it("should show success toast when creating note successfully", async () => {
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
+
+    const titleInput = screen.getByPlaceholderText("Enter note title");
+    const contentInput = screen.getByPlaceholderText("Enter note content");
+    const submitButton = screen.getByRole("button", { name: /create note/i });
+
+    fireEvent.change(titleInput, { target: { value: "New Note" } });
+    fireEvent.change(contentInput, { target: { value: "New Content" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Note created successfully");
+    });
+  });
+
+  it("should show success toast when updating note successfully", async () => {
+    const note: Note = {
+      id: 1,
+      title: "Old Title",
+      content: "Old Content",
+      createdAt: "2024-01-01",
+      updatedAt: "2024-01-01",
+    };
+
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />, { wrapper });
+
+    const titleInput = screen.getByDisplayValue("Old Title");
+    const submitButton = screen.getByRole("button", { name: /save changes/i });
+
+    fireEvent.change(titleInput, { target: { value: "Updated Title" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Note updated successfully");
+    });
+  });
+
+  it("should show error toast when creating note fails", async () => {
+    mockMutateAsync.mockRejectedValueOnce(new Error("Network error"));
+
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
+
+    const titleInput = screen.getByPlaceholderText("Enter note title");
+    const submitButton = screen.getByRole("button", { name: /create note/i });
+
+    fireEvent.change(titleInput, { target: { value: "New Note" } });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Failed to create note. Please try again.");
+    });
+
+    expect(mockOnOpenChange).not.toHaveBeenCalledWith(false);
+  });
+
+  it("should show error toast when updating note fails", async () => {
+    mockMutateAsync.mockRejectedValueOnce(new Error("Network error"));
+
+    const note: Note = {
+      id: 1,
+      title: "Old Title",
+      content: "Old Content",
+      createdAt: "2024-01-01",
+      updatedAt: "2024-01-01",
+    };
+
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />, { wrapper });
+
+    const submitButton = screen.getByRole("button", { name: /save changes/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Failed to update note. Please try again.");
+    });
+
+    expect(mockOnOpenChange).not.toHaveBeenCalledWith(false);
   });
 });

@@ -4,6 +4,7 @@ import { NoteFormModal } from "./NoteFormModal";
 import { useNotes, useDeleteNote, type Note } from "@/hooks/useNotes";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { toast } from "sonner";
 
 export function NotesList() {
   const { data: notes, isLoading, error } = useNotes();
@@ -25,8 +26,10 @@ export function NotesList() {
   const handleDeleteNote = async (id: number) => {
     try {
       await deleteNote.mutateAsync(id);
+      toast.success("Note deleted successfully");
     } catch (err) {
       console.error("Failed to delete note:", err);
+      toast.error("Failed to delete note. Please try again.");
     }
   };
 

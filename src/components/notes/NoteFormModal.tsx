@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 import { useCreateNote, useUpdateNote, type Note } from "@/hooks/useNotes";
 
 interface NoteFormModalProps {
@@ -44,17 +45,20 @@ function NoteFormContent({
           title,
           content,
         });
+        toast.success("Note updated successfully");
       } else {
         await createNote.mutateAsync({
           title,
           content,
         });
+        toast.success("Note created successfully");
       }
       onOpenChange(false);
       setTitle("");
       setContent("");
     } catch (err) {
       console.error(`Failed to ${isEditing ? "update" : "create"} note:`, err);
+      toast.error(`Failed to ${isEditing ? "update" : "create"} note. Please try again.`);
     }
   };
 
