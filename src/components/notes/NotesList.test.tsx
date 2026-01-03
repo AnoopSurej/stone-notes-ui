@@ -4,7 +4,15 @@ import { NotesList } from "./NotesList";
 import type { Note } from "@/hooks/useNotes";
 
 jest.mock("./NoteItem", () => ({
-  NoteItem: ({ note, onEdit, onDelete }: { note: Note; onEdit: (note: Note) => void; onDelete: (id: number) => void }) => (
+  NoteItem: ({
+    note,
+    onEdit,
+    onDelete,
+  }: {
+    note: Note;
+    onEdit: (note: Note) => void;
+    onDelete: (id: number) => void;
+  }) => (
     <div data-testid={`note-${note.id}`}>
       <span>{note.title}</span>
       <button onClick={() => onEdit(note)}>Edit</button>
@@ -15,9 +23,7 @@ jest.mock("./NoteItem", () => ({
 
 jest.mock("./NoteFormModal", () => ({
   NoteFormModal: ({ open, note }: { open: boolean; note?: Note | null }) => (
-    <div data-testid="note-form-modal">
-      {open && <span>Modal {note ? "Edit" : "Create"}</span>}
-    </div>
+    <div data-testid="note-form-modal">{open && <span>Modal {note ? "Edit" : "Create"}</span>}</div>
   ),
 }));
 

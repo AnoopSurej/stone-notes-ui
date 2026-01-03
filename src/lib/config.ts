@@ -12,17 +12,13 @@ export const oidcConfig = {
   monitorSession: true,
   post_logout_redirect_uri: window.location.origin + "/signedout",
   onSigninCallback: () => {
-    const returnUrl = sessionStorage.getItem('returnUrl');
+    const returnUrl = sessionStorage.getItem("returnUrl");
 
     if (returnUrl) {
-      sessionStorage.removeItem('returnUrl');
+      sessionStorage.removeItem("returnUrl");
       window.location.replace(returnUrl);
     } else {
-      window.history.replaceState(
-        {},
-        document.title,
-        window.location.pathname
-      );
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   },
 };

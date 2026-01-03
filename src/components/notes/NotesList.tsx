@@ -49,9 +49,7 @@ export function NotesList() {
 
       {isLoading && <div>Loading notes...</div>}
 
-      {error && (
-        <div className="text-red-600">Error loading notes: {error.message}</div>
-      )}
+      {error && <div className="text-red-600">Error loading notes: {error.message}</div>}
 
       {notes && notes.length === 0 && (
         <p className="text-gray-500">No notes yet. Create your first note!</p>
@@ -69,11 +67,7 @@ export function NotesList() {
         ))}
       </div>
 
-      <NoteFormModal
-        open={isModalOpen}
-        onOpenChange={handleModalClose}
-        note={editingNote}
-      />
+      <NoteFormModal open={isModalOpen} onOpenChange={handleModalClose} note={editingNote} />
     </div>
   );
 }

@@ -18,11 +18,7 @@ interface DeleteNoteDialogProps {
   isDeleting: boolean;
 }
 
-export function DeleteNoteDialog({
-  note,
-  onConfirm,
-  isDeleting,
-}: DeleteNoteDialogProps) {
+export function DeleteNoteDialog({ note, onConfirm, isDeleting }: DeleteNoteDialogProps) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -34,8 +30,7 @@ export function DeleteNoteDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete the note "{note.title}". This action
-            cannot be undone.
+            This will permanently delete the note "{note.title}". This action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

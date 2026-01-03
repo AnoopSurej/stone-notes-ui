@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+
+# Coverage reports
+coverage
+
+# Lock files
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+
+# Third-party UI components (shadcn)
+src/components/ui

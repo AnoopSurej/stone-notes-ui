@@ -27,11 +27,7 @@ export function NoteItem({ note, onEdit, onDelete, isDeleting }: NoteItemProps) 
             <Button variant="outline" size="sm" onClick={() => onEdit(note)}>
               Edit
             </Button>
-            <DeleteNoteDialog
-              note={note}
-              onConfirm={onDelete}
-              isDeleting={isDeleting}
-            />
+            <DeleteNoteDialog note={note} onConfirm={onDelete} isDeleting={isDeleting} />
           </div>
         </div>
       </CardHeader>
@@ -41,9 +37,7 @@ export function NoteItem({ note, onEdit, onDelete, isDeleting }: NoteItemProps) 
         </CardContent>
       )}
       <CardFooter>
-        <CardDescription>
-          Created: {new Date(note.createdAt).toLocaleString()}
-        </CardDescription>
+        <CardDescription>Created: {new Date(note.createdAt).toLocaleString()}</CardDescription>
       </CardFooter>
     </Card>
   );

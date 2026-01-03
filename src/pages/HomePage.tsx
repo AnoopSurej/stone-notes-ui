@@ -32,17 +32,11 @@ export default function HomePage() {
         <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center">
           <img src="/stone.svg" alt="Stone Notes" className="h-full w-full" />
         </div>
-        <h1 className="text-5xl font-bold tracking-tight mb-4">
-          Stone Notes
-        </h1>
+        <h1 className="text-5xl font-bold tracking-tight mb-4">Stone Notes</h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
           Your secure, simple note-taking companion.
         </p>
-        <Button
-          size="lg"
-          onClick={() => void auth.signinRedirect()}
-          className="text-lg px-8 py-6"
-        >
+        <Button size="lg" onClick={() => void auth.signinRedirect()} className="text-lg px-8 py-6">
           Get Started
         </Button>
       </div>

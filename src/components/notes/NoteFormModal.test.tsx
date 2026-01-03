@@ -39,10 +39,7 @@ describe("NoteFormModal", () => {
   });
 
   it("should render in create mode when no note is provided", () => {
-    render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} />,
-      { wrapper }
-    );
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
 
     expect(screen.getByText("Create New Note")).toBeInTheDocument();
     expect(screen.getByText("Add a new note to your collection.")).toBeInTheDocument();
@@ -58,10 +55,7 @@ describe("NoteFormModal", () => {
       updatedAt: "2024-01-01",
     };
 
-    render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />,
-      { wrapper }
-    );
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />, { wrapper });
 
     expect(screen.getByText("Edit Note")).toBeInTheDocument();
     expect(screen.getByDisplayValue("Test Note")).toBeInTheDocument();
@@ -70,10 +64,7 @@ describe("NoteFormModal", () => {
   });
 
   it("should call createNote when submitting in create mode", async () => {
-    render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} />,
-      { wrapper }
-    );
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
 
     const titleInput = screen.getByPlaceholderText("Enter note title");
     const contentInput = screen.getByPlaceholderText("Enter note content");
@@ -102,10 +93,7 @@ describe("NoteFormModal", () => {
       updatedAt: "2024-01-01",
     };
 
-    render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />,
-      { wrapper }
-    );
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} note={note} />, { wrapper });
 
     const titleInput = screen.getByDisplayValue("Old Title");
     const submitButton = screen.getByRole("button", { name: /save changes/i });
@@ -127,10 +115,7 @@ describe("NoteFormModal", () => {
   it("should disable buttons when pending", () => {
     mockCreateNote.isPending = true;
 
-    render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} />,
-      { wrapper }
-    );
+    render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
 
     const cancelButton = screen.getByRole("button", { name: /cancel/i });
     expect(cancelButton).toBeDisabled();
@@ -139,21 +124,16 @@ describe("NoteFormModal", () => {
   });
 
   it("should clear form after closing", async () => {
-    const { rerender } = render(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} />,
-      { wrapper }
-    );
+    const { rerender } = render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, {
+      wrapper,
+    });
 
     const titleInput = screen.getByPlaceholderText("Enter note title");
     fireEvent.change(titleInput, { target: { value: "Test" } });
 
-    rerender(
-      <NoteFormModal open={false} onOpenChange={mockOnOpenChange} />
-    );
+    rerender(<NoteFormModal open={false} onOpenChange={mockOnOpenChange} />);
 
-    rerender(
-      <NoteFormModal open={true} onOpenChange={mockOnOpenChange} />
-    );
+    rerender(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />);
 
     expect(screen.getByPlaceholderText("Enter note title")).toHaveValue("");
   });

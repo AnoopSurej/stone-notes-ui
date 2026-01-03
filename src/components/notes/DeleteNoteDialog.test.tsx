@@ -18,25 +18,13 @@ describe("DeleteNoteDialog", () => {
   });
 
   it("should render delete button", () => {
-    render(
-      <DeleteNoteDialog
-        note={mockNote}
-        onConfirm={mockOnConfirm}
-        isDeleting={false}
-      />
-    );
+    render(<DeleteNoteDialog note={mockNote} onConfirm={mockOnConfirm} isDeleting={false} />);
 
     expect(screen.getByRole("button", { name: /delete/i })).toBeInTheDocument();
   });
 
   it("should show confirmation dialog when delete is clicked", () => {
-    render(
-      <DeleteNoteDialog
-        note={mockNote}
-        onConfirm={mockOnConfirm}
-        isDeleting={false}
-      />
-    );
+    render(<DeleteNoteDialog note={mockNote} onConfirm={mockOnConfirm} isDeleting={false} />);
 
     const deleteButton = screen.getByRole("button", { name: /delete/i });
     fireEvent.click(deleteButton);
@@ -48,13 +36,7 @@ describe("DeleteNoteDialog", () => {
   });
 
   it("should call onConfirm when confirmed", async () => {
-    render(
-      <DeleteNoteDialog
-        note={mockNote}
-        onConfirm={mockOnConfirm}
-        isDeleting={false}
-      />
-    );
+    render(<DeleteNoteDialog note={mockNote} onConfirm={mockOnConfirm} isDeleting={false} />);
 
     // Open dialog
     const deleteButton = screen.getByRole("button", { name: /delete/i });
@@ -75,26 +57,14 @@ describe("DeleteNoteDialog", () => {
   });
 
   it("should disable button when isDeleting is true", () => {
-    render(
-      <DeleteNoteDialog
-        note={mockNote}
-        onConfirm={mockOnConfirm}
-        isDeleting={true}
-      />
-    );
+    render(<DeleteNoteDialog note={mockNote} onConfirm={mockOnConfirm} isDeleting={true} />);
 
     const deleteButton = screen.getByRole("button", { name: /delete/i });
     expect(deleteButton).toBeDisabled();
   });
 
   it("should not call onConfirm when cancelled", () => {
-    render(
-      <DeleteNoteDialog
-        note={mockNote}
-        onConfirm={mockOnConfirm}
-        isDeleting={false}
-      />
-    );
+    render(<DeleteNoteDialog note={mockNote} onConfirm={mockOnConfirm} isDeleting={false} />);
 
     // Open dialog
     const deleteButton = screen.getByRole("button", { name: /delete/i });

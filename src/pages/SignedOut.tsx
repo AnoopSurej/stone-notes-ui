@@ -44,22 +44,16 @@ export default function SignedOut() {
           </div>
           <CardTitle>You've been signed out</CardTitle>
           <CardDescription>
-            Your session has ended successfully. Sign in again to continue using
-            Stone Notes.
+            Your session has ended successfully. Sign in again to continue using Stone Notes.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            onClick={() => void auth.signinRedirect()}
-            className="w-full"
-          >
+          <Button onClick={() => void auth.signinRedirect()} className="w-full">
             Sign In Again
           </Button>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <p className="text-sm text-muted-foreground">
-            Thank you for using Stone Notes
-          </p>
+          <p className="text-sm text-muted-foreground">Thank you for using Stone Notes</p>
         </CardFooter>
       </Card>
     </div>

@@ -38,7 +38,7 @@ describe("HomePage", () => {
     mockAuth.isLoading = true;
 
     render(
-        // need browser router due to the use of useNavigate in this page
+      // need browser router due to the use of useNavigate in this page
       <BrowserRouter>
         <HomePage />
       </BrowserRouter>
@@ -55,9 +55,7 @@ describe("HomePage", () => {
     );
 
     expect(screen.getByText("Stone Notes")).toBeInTheDocument();
-    expect(
-      screen.getByText("Your secure, simple note-taking companion.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Your secure, simple note-taking companion.")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /get started/i })).toBeInTheDocument();
   });
 

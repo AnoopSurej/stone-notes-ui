@@ -19,13 +19,10 @@ export default function NotesPage() {
         <div>
           <h1 className="text-3xl font-bold">Stone Notes</h1>
           <p className="text-gray-600">
-            Welcome, {auth.user?.profile.given_name}{" "}
-            {auth.user?.profile.family_name}!
+            Welcome, {auth.user?.profile.given_name} {auth.user?.profile.family_name}!
           </p>
         </div>
-        <Button onClick={() => auth.signoutRedirect()}>
-          Logout
-        </Button>
+        <Button onClick={() => auth.signoutRedirect()}>Logout</Button>
       </div>
 
       <NotesList />

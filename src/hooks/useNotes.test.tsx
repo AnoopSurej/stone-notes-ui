@@ -135,9 +135,9 @@ describe("useCreateNote", () => {
       wrapper: createWrapper(),
     });
 
-    await expect(
-      result.current.mutateAsync({ title: "Test", content: "Test" })
-    ).rejects.toThrow("Create failed");
+    await expect(result.current.mutateAsync({ title: "Test", content: "Test" })).rejects.toThrow(
+      "Create failed"
+    );
   });
 });
 

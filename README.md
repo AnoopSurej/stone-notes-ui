@@ -13,6 +13,10 @@ Stone Notes UI is a React-based frontend for the Stone Notes application, provid
 - **Tailwind CSS** - Utility-first styling
 - **Shadcn/ui** - Accessible component library
 - **Jest** - Testing framework
+- **Husky** - Git hooks management
+- **lint-staged** - Run linters on staged files
+- **Prettier** - Code formatting
+- **ESLint** - Code linting
 
 ## Features
 
@@ -64,7 +68,30 @@ The application will be available at `http://localhost:5173`
 - `npm run test:coverage` - Run tests with coverage report
 - `npm run watch` - Run tests in watch mode
 - `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
 - `npm run preview` - Preview production build
+
+## Git Hooks & Code Quality
+
+This project uses **Husky** and **lint-staged** to enforce code quality standards before commits. Pre-commit hooks are automatically installed when you run `npm install`.
+
+### Pre-commit Checks
+
+Every commit triggers the following checks in sequence:
+
+1. **TypeScript Compilation** (`tsc -b`) - Validates all TypeScript types
+2. **Format & Lint Staged Files** - Runs Prettier and ESLint only on staged files
+3. **Tests** (`npm run test`) - Runs the full Jest test suite
+4. **Build** (`npm run build`) - Ensures the project builds successfully
+
+If any check fails, the commit will be aborted with a clear error message.
+
+### Configuration
+
+- **Husky hooks**: `.husky/pre-commit`
+- **lint-staged config**: `package.json` - `lint-staged` section
+- Runs Prettier with auto-fix and ESLint only on staged `*.ts` and `*.tsx` files
 
 ## Project Structure
 

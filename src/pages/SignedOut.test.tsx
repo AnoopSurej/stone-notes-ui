@@ -38,7 +38,7 @@ describe("SignedOut", () => {
     mockAuth.isLoading = true;
 
     render(
-        // need browser router due to the use of useNavigate in this page
+      // need browser router due to the use of useNavigate in this page
       <BrowserRouter>
         <SignedOut />
       </BrowserRouter>
@@ -55,9 +55,7 @@ describe("SignedOut", () => {
     );
 
     expect(screen.getByText("You've been signed out")).toBeInTheDocument();
-    expect(
-      screen.getByText(/Your session has ended successfully/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Your session has ended successfully/)).toBeInTheDocument();
     expect(screen.getByText("Thank you for using Stone Notes")).toBeInTheDocument();
   });
 
@@ -68,9 +66,7 @@ describe("SignedOut", () => {
       </BrowserRouter>
     );
 
-    expect(
-      screen.getByRole("button", { name: /sign in again/i })
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /sign in again/i })).toBeInTheDocument();
   });
 
   it("should call signinRedirect when Sign In Again is clicked", () => {

@@ -26,12 +26,7 @@ describe("NoteItem", () => {
 
   it("should render note title and content", () => {
     render(
-      <NoteItem
-        note={mockNote}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-        isDeleting={false}
-      />
+      <NoteItem note={mockNote} onEdit={mockOnEdit} onDelete={mockOnDelete} isDeleting={false} />
     );
 
     expect(screen.getByText("Test Note")).toBeInTheDocument();
@@ -40,12 +35,7 @@ describe("NoteItem", () => {
 
   it("should render created date", () => {
     render(
-      <NoteItem
-        note={mockNote}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-        isDeleting={false}
-      />
+      <NoteItem note={mockNote} onEdit={mockOnEdit} onDelete={mockOnDelete} isDeleting={false} />
     );
 
     expect(screen.getByText(/Created:/)).toBeInTheDocument();
@@ -53,12 +43,7 @@ describe("NoteItem", () => {
 
   it("should call onEdit when edit button is clicked", () => {
     render(
-      <NoteItem
-        note={mockNote}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-        isDeleting={false}
-      />
+      <NoteItem note={mockNote} onEdit={mockOnEdit} onDelete={mockOnDelete} isDeleting={false} />
     );
 
     const editButton = screen.getByRole("button", { name: /edit/i });
@@ -69,12 +54,7 @@ describe("NoteItem", () => {
 
   it("should render DeleteNoteDialog", () => {
     render(
-      <NoteItem
-        note={mockNote}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-        isDeleting={false}
-      />
+      <NoteItem note={mockNote} onEdit={mockOnEdit} onDelete={mockOnDelete} isDeleting={false} />
     );
 
     expect(screen.getByText("Delete Dialog")).toBeInTheDocument();
@@ -97,12 +77,7 @@ describe("NoteItem", () => {
 
   it("should preserve whitespace in content", () => {
     render(
-      <NoteItem
-        note={mockNote}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-        isDeleting={false}
-      />
+      <NoteItem note={mockNote} onEdit={mockOnEdit} onDelete={mockOnDelete} isDeleting={false} />
     );
 
     const content = screen.getByText(/Test Content/);
