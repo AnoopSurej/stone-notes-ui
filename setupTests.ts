@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import { TextEncoder, TextDecoder } from "util";
 
-(globalThis as any).TextEncoder = TextEncoder;
-(globalThis as any).TextDecoder = TextDecoder;
+// Type-safe global polyfills for Node.js testing environment
+(globalThis as typeof globalThis & { TextEncoder: typeof TextEncoder }).TextEncoder = TextEncoder;
+(globalThis as typeof globalThis & { TextDecoder: typeof TextDecoder }).TextDecoder = TextDecoder;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -20,24 +20,13 @@ interface NoteFormModalProps {
   note?: Note;
 }
 
-export function NoteFormModal({ open, onOpenChange, note }: NoteFormModalProps) {
+function NoteFormContent({ note, onOpenChange }: { note?: Note; onOpenChange: (open: boolean) => void }) {
   const createNote = useCreateNote();
   const updateNote = useUpdateNote();
   const isEditing = !!note;
 
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
-  // Update form when note changes or modal opens
-  useEffect(() => {
-    if (note) {
-      setTitle(note.title);
-      setContent(note.content);
-    } else {
-      setTitle("");
-      setContent("");
-    }
-  }, [note, open]);
+  const [title, setTitle] = useState(note?.title ?? "");
+  const [content, setContent] = useState(note?.content ?? "");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,9 +55,7 @@ export function NoteFormModal({ open, onOpenChange, note }: NoteFormModalProps) 
   const isPending = createNote.isPending || updateNote.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[525px]">
-        <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>{isEditing ? "Edit Note" : "Create New Note"}</DialogTitle>
             <DialogDescription>
@@ -122,6 +109,14 @@ export function NoteFormModal({ open, onOpenChange, note }: NoteFormModalProps) 
             </Button>
           </DialogFooter>
         </form>
+  );
+}
+
+export function NoteFormModal({ open, onOpenChange, note }: NoteFormModalProps) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[525px]">
+        <NoteFormContent key={note?.id ?? 'new'} note={note} onOpenChange={onOpenChange} />
       </DialogContent>
     </Dialog>
   );
