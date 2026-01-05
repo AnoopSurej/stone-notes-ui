@@ -49,14 +49,29 @@ const notesKeys = {
   detail: (id: number) => ["notes", id] as const,
 };
 
-export function useNotes(page = 0, size = 100) {
+export type SortBy = "createdAt" | "updatedAt" | "title";
+export type SortDir = "asc" | "desc";
+
+export interface UseNotesParams {
+  page?: number;
+  size?: number;
+  sortBy?: SortBy;
+  sortDir?: SortDir;
+}
+
+export function useNotes({
+  page = 0,
+  size = 100,
+  sortBy = "createdAt",
+  sortDir = "desc",
+}: UseNotesParams = {}) {
   const auth = useAuth();
 
   return useQuery({
-    queryKey: [...notesKeys.all, page, size],
+    queryKey: [...notesKeys.all, page, size, sortBy, sortDir],
     queryFn: async (): Promise<Note[]> => {
       const { data } = await axios.get<ApiResponse<Page<Note>>>(`${config.apiUrl}/api/notes`, {
-        params: { page, size, sortBy: "createdAt", sortDir: "desc" },
+        params: { page, size, sortBy, sortDir },
         headers: {
           Authorization: `Bearer ${auth.user?.access_token}`,
         },

@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { NoteItem } from "./NoteItem";
 import { NoteFormModal } from "./NoteFormModal";
-import { useNotes, useDeleteNote, type Note } from "@/hooks/useNotes";
+import { SortControl } from "./SortControl";
+import { useNotes, useDeleteNote, type Note, type SortBy, type SortDir } from "@/hooks/useNotes";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
 
 export function NotesList() {
-  const { data: notes, isLoading, error } = useNotes();
+  const [sortBy, setSortBy] = useState<SortBy>("createdAt");
+  const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const { data: notes, isLoading, error } = useNotes({ sortBy, sortDir });
   const deleteNote = useDeleteNote();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,10 +47,18 @@ export function NotesList() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Your Notes</h2>
-        <Button onClick={handleCreateNote}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Note
-        </Button>
+        <div className="flex items-center gap-4">
+          <SortControl
+            sortBy={sortBy}
+            sortDir={sortDir}
+            onSortByChange={setSortBy}
+            onSortDirChange={setSortDir}
+          />
+          <Button onClick={handleCreateNote}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Note
+          </Button>
+        </div>
       </div>
 
       {isLoading && <div>Loading notes...</div>}

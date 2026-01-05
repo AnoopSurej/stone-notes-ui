@@ -140,6 +140,8 @@ describe("NotesList", () => {
   });
 
   it("should show error toast when deleting note fails", async () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
     mockDeleteMutate.mockRejectedValueOnce(new Error("Network error"));
 
     render(<NotesList />, { wrapper });
@@ -150,5 +152,7 @@ describe("NotesList", () => {
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith("Failed to delete note. Please try again.");
     });
+
+    consoleErrorSpy.mockRestore();
   });
 });

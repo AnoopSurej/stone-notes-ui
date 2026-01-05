@@ -185,6 +185,8 @@ describe("NoteFormModal", () => {
   });
 
   it("should show error toast when creating note fails", async () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
     mockMutateAsync.mockRejectedValueOnce(new Error("Network error"));
 
     render(<NoteFormModal open={true} onOpenChange={mockOnOpenChange} />, { wrapper });
@@ -200,9 +202,13 @@ describe("NoteFormModal", () => {
     });
 
     expect(mockOnOpenChange).not.toHaveBeenCalledWith(false);
+
+    consoleErrorSpy.mockRestore();
   });
 
   it("should show error toast when updating note fails", async () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
     mockMutateAsync.mockRejectedValueOnce(new Error("Network error"));
 
     const note: Note = {
@@ -223,5 +229,7 @@ describe("NoteFormModal", () => {
     });
 
     expect(mockOnOpenChange).not.toHaveBeenCalledWith(false);
+
+    consoleErrorSpy.mockRestore();
   });
 });
