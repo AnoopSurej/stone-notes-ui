@@ -53,17 +53,12 @@ const mockNotes: Note[] = [
 ];
 
 const mockDeleteMutate = jest.fn();
+const mockUseNotes = jest.fn();
+const mockUseDeleteNote = jest.fn();
 
 jest.mock("@/hooks/useNotes", () => ({
-  useNotes: () => ({
-    data: mockNotes,
-    isLoading: false,
-    error: null,
-  }),
-  useDeleteNote: () => ({
-    mutateAsync: mockDeleteMutate,
-    isPending: false,
-  }),
+  useNotes: () => mockUseNotes(),
+  useDeleteNote: () => mockUseDeleteNote(),
 }));
 
 jest.mock("react-oidc-context", () => ({
@@ -82,6 +77,17 @@ describe("NotesList", () => {
     jest.clearAllMocks();
     global.confirm = jest.fn(() => true);
     mockDeleteMutate.mockResolvedValue({});
+
+    // Set default mock return values
+    mockUseNotes.mockReturnValue({
+      data: mockNotes,
+      isLoading: false,
+      error: null,
+    });
+    mockUseDeleteNote.mockReturnValue({
+      mutateAsync: mockDeleteMutate,
+      isPending: false,
+    });
   });
 
   it("should render list of notes", () => {
@@ -154,5 +160,55 @@ describe("NotesList", () => {
     });
 
     consoleErrorSpy.mockRestore();
+  });
+
+  describe("Error Alert", () => {
+    it("should display error alert when fetching notes fails", () => {
+      mockUseNotes.mockReturnValueOnce({
+        data: null,
+        isLoading: false,
+        error: new Error("Network error"),
+      });
+
+      render(<NotesList />, { wrapper });
+
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByText("Failed to load notes. Please try again later.")).toBeInTheDocument();
+    });
+
+    it("should not display error alert when there is no error", () => {
+      render(<NotesList />, { wrapper });
+
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+      expect(
+        screen.queryByText("Failed to load notes. Please try again later.")
+      ).not.toBeInTheDocument();
+    });
+
+    it("should display error alert with destructive variant", () => {
+      mockUseNotes.mockReturnValueOnce({
+        data: null,
+        isLoading: false,
+        error: new Error("Network error"),
+      });
+
+      render(<NotesList />, { wrapper });
+
+      const alert = screen.getByRole("alert");
+      expect(alert).toHaveClass("flex", "items-center", "gap-2");
+    });
+
+    it("should not display notes when there is an error", () => {
+      mockUseNotes.mockReturnValueOnce({
+        data: null,
+        isLoading: false,
+        error: new Error("Network error"),
+      });
+
+      render(<NotesList />, { wrapper });
+
+      expect(screen.queryByText("Note 1")).not.toBeInTheDocument();
+      expect(screen.queryByText("Note 2")).not.toBeInTheDocument();
+    });
   });
 });

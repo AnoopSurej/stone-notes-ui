@@ -6,6 +6,7 @@ import { useNotes, useDeleteNote, type Note, type SortBy, type SortDir } from "@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function NotesList() {
   const [sortBy, setSortBy] = useState<SortBy>("createdAt");
@@ -63,7 +64,13 @@ export function NotesList() {
 
       {isLoading && <div>Loading notes...</div>}
 
-      {error && <div className="text-red-600">Error loading notes: {error.message}</div>}
+      {error && (
+        <Alert variant="destructive" className="flex items-center gap-2">
+          <AlertDescription className="flex-1">
+            Failed to load notes. Please try again later.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {notes && notes.length === 0 && (
         <p className="text-gray-500">No notes yet. Create your first note!</p>
